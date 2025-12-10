@@ -1,0 +1,85 @@
+ // app/page.js
+'use client'
+
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+export default function Home() {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  if (!mounted) return null
+
+  return (
+    <main className="min-h-screen flex items-center justify-center p-4">
+      <div className="glass-card p-8 md:p-12 max-w-2xl w-full text-center space-y-8 animate-float">
+        {/* Header */}
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-7xl font-bold gradient-text drop-shadow-lg">
+            🎄 Merry Christmas 🎄
+          </h1>
+          <p className="text-xl md:text-2xl text-white/90 font-light">
+            Chia sẻ niềm vui và yêu thương trong mùa Giáng Sinh
+          </p>
+        </div>
+
+        {/* Decorative Divider */}
+        <div className="flex items-center justify-center space-x-4 py-4">
+          <div className="h-px bg-gradient-to-r from-transparent via-christmas-gold to-transparent w-full" />
+          <span className="text-3xl">🎁</span>
+          <div className="h-px bg-gradient-to-r from-transparent via-christmas-gold to-transparent w-full" />
+        </div>
+
+        {/* Description */}
+        <div className="space-y-4 text-white/80">
+          <p className="text-lg">
+            Tạo một món quà đặc biệt với lời chúc ý nghĩa và chia sẻ niềm vui với mọi người!
+          </p>
+          <div className="grid md:grid-cols-2 gap-4 text-left">
+            <div className="bg-white/5 p-4 rounded-lg">
+              <div className="text-2xl mb-2">✨</div>
+              <h3 className="font-bold mb-1">Tạo Quà Tặng</h3>
+              <p className="text-sm text-white/70">Viết lời chúc của bạn và nhận mã quà tặng độc đáo</p>
+            </div>
+            <div className="bg-white/5 p-4 rounded-lg">
+              <div className="text-2xl mb-2">🎉</div>
+              <h3 className="font-bold mb-1">Mở Quà Ngẫu Nhiên</h3>
+              <p className="text-sm text-white/70">Khám phá những lời chúc ấm áp từ mọi người</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex flex-col md:flex-row gap-4 pt-4">
+          <Link 
+            href="/create"
+            className="glass-button flex-1 hover:from-christmas-green hover:to-green-700"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <span>🎁</span>
+              <span>Tạo Quà Tặng</span>
+            </span>
+          </Link>
+          
+          <Link 
+            href="/open"
+            className="glass-button flex-1 hover:from-christmas-gold hover:to-yellow-600"
+          >
+            <span className="flex items-center justify-center gap-2">
+              <span>🎊</span>
+              <span>Mở Quà</span>
+            </span>
+          </Link>
+        </div>
+
+        {/* Footer Text */}
+        <div className="pt-8 text-sm text-white/60">
+          <p>Made with ❤️ for the holiday season</p>
+        </div>
+      </div>
+    </main>
+  )
+}

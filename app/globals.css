@@ -1,0 +1,59 @@
+ /* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gradient-to-br from-red-900 via-green-900 to-red-900;
+    @apply min-h-screen text-white overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20;
+    @apply shadow-2xl shadow-black/50;
+  }
+
+  .glass-button {
+    @apply bg-gradient-to-r from-christmas-red to-red-700;
+    @apply px-8 py-4 rounded-xl font-bold text-lg;
+    @apply shadow-lg hover:shadow-2xl;
+    @apply transition-all duration-300;
+    @apply hover:scale-105 hover:-translate-y-1;
+    @apply active:scale-95;
+  }
+
+  .glass-input {
+    @apply w-full px-4 py-3 rounded-lg;
+    @apply bg-white/20 backdrop-blur-md;
+    @apply border-2 border-white/30;
+    @apply text-white placeholder-white/60;
+    @apply focus:outline-none focus:border-christmas-gold;
+    @apply transition-all duration-300;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-christmas-gold via-yellow-300 to-christmas-gold;
+    @apply bg-clip-text text-transparent;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #DC2626, #059669);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #FCD34D, #DC2626);
+}
