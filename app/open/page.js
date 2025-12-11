@@ -29,8 +29,8 @@ export default function OpenGift() {
     setIsLoading(true)
 
     try {
-      // Simulate loading delay (2-5 seconds)
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000))
+      // Simulate loading delay (1-3 seconds)
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
 
       const response = await fetch('/api/random-gift')
       const data = await response.json()

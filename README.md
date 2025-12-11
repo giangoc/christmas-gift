@@ -6,6 +6,19 @@ Sau khi cài đặt chạy thử cmd
     # Verify npm version:
     npm -v # Should print "11.6.2"
 
+Thực hiện tải cloen source về máy
+ Thực hiện tạo một file .evn.local
+ gồm các key như sau
+  # .env.local
+NEXT_PUBLIC_SUPABASE_URL={URL được lấy từ trang của supabase}
+NEXT_PUBLIC_SUPABASE_ANON_KEY={Key được lấy từ trang của supabase}
+ADMIN_USERNAME=admin    # user để login trang mở quà
+ADMIN_PASSWORD=meo   # pass để login trang mở quà
+
+# Secret key for session (generate random string)
+SESSION_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
+
 Di chuyển đến thư mục của project
  Cách 1: dùng lệnh cd rồi di chuyển vào thư mục .\christmas-gift
  Cách 2: mở thư mục đó như bình thường, trên đường dẫn nhập cmd nó cũng sẽ mở cmd nằm ngay thư mục
