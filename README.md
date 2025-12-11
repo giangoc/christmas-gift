@@ -1,4 +1,3 @@
-Muốn thấy rõ câu thư mục, trên web github hãy chọn chế độ CODE thay vì REVIEW
 Thực hiện tải node về máy tính
  https://nodejs.org/en/download
 
@@ -19,6 +18,37 @@ Lệnh CMD:
    npm run dev 
  Lưu ý lệnh cmd đề phải thực hiện ở thư mục gốc của dự án.
 
+-----------------------------------------------------------------------
+Thực hiện tạo table cho database Supabase
+
+-- Tạo bảng gifts
+CREATE TABLE gifts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  gift_code VARCHAR(10) UNIQUE NOT NULL,
+  message TEXT NOT NULL,
+  is_opened BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- Tạo index để tăng tốc query
+CREATE INDEX idx_gift_code ON gifts(gift_code);
+CREATE INDEX idx_is_opened ON gifts(is_opened);
+
+-- Enable Row Level Security (optional, có thể bật sau)
+ALTER TABLE gifts ENABLE ROW LEVEL SECURITY;
+
+-- Policy cho phép mọi người đọc và tạo
+CREATE POLICY "Enable read access for all users" ON gifts
+  FOR SELECT USING (true);
+
+CREATE POLICY "Enable insert access for all users" ON gifts
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable update for all users" ON gifts
+  FOR UPDATE USING (true);
+
+
+-----------------------------------------------------------------------
 📁 Cấu Trúc Thư Mục Project
  christmas-gift-exchange/
 ├── app/
@@ -26,8 +56,6 @@ Lệnh CMD:
 │   ├── page.js                    # Trang chủ
 │   ├── create/
 │   │   └── page.js                # Trang tạo quà
-│   ├── login/
-│   │   └── page.js                # Trang đăng nhập
 │   ├── open/
 │   │   └── page.js                # Trang mở quà
 │   ├── globals.css
@@ -35,7 +63,7 @@ Lệnh CMD:
 │       ├── gifts/
 │       │   └── route.js           # API tạo quà
 │       └── random-gift/
-│       |    └── route.js          # API lấy quà ngẫu nhiên
+│       |    └── route.js           # API lấy quà ngẫu nhiên
 │       ├── login/
 │       │   └── route.js           # API đăng nhập
 │       └── logout/
@@ -56,9 +84,6 @@ Lệnh CMD:
 ├── next.config.js
 ├── tailwind.config.js
 ├── jsconfig.json
-├── postcss.config.js              # Hỗ trợ load goabl.css và tailwind, file này rất quan trọng nếu không có sẽ bị lỗi CSS
+├── postcss.config.js               # Hỗ trợ load goabl.css và tailwind, file này rất quan trọng nếu không có sẽ bị lỗi CSS
 ├── package.json
-├── middleware.js                  # quản lý phần authen
 └── README.md
-
-

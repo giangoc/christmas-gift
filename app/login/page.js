@@ -30,7 +30,8 @@ export default function Login() {
 
       if (response.ok) {
         // Redirect to /open page
-        router.push('/open')
+       //router.push('/open') -> thường sẽ lỗi khi setcookie xong nó chưa xóa cache đc nên sẽ nằm ở trang login hoài
+        window.location.href = '/open'  //thực hiện reload page chuyển sang trang open luôn
       } else {
         setError(data.error || 'Đăng nhập thất bại')
       }
@@ -42,8 +43,8 @@ export default function Login() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass-card p-8 md:p-12 max-w-md w-full">
+    <main className="min-h-screen flex items-center justify-center p-3 sm:p-4 py-6">
+      <div className="glass-card p-6 sm:p-8 md:p-10 max-w-md w-full my-auto">
         {/* Back Button */}
         <Link 
           href="/"
@@ -54,14 +55,11 @@ export default function Login() {
         </Link>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="text-5xl mb-4">🔐</div>
-          <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="text-4xl sm:text-5xl mb-3 sm:mb-4">🔐</div>
+          <h1 className="text-xl sm:text-2xl md:text-4xl font-bold gradient-text mb-2">
             Đăng Nhập
           </h1>
-          <p className="text-white/80 text-sm">
-            Chỉ quản trị viên mới có thể mở quà
-          </p>
         </div>
 
         {/* Login Form */}

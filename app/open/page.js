@@ -17,7 +17,8 @@ export default function OpenGift() {
   const handleLogout = async () => {
     try {
       await fetch('/api/logout', { method: 'POST' })
-      router.push('/')
+      //router.push('/')
+      window.location.href = '/'
     } catch (error) {
       console.error('Logout error:', error)
     }

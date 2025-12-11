@@ -48,12 +48,12 @@ export default function CreateGift() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-4">
-      <div className="glass-card p-8 md:p-12 max-w-2xl w-full">
+    <main className="min-h-screen flex items-center justify-center p-3 sm:p-4 py-6">
+      <div className="glass-card p-4 sm:p-6 md:p-8 lg:p-10 max-w-2xl w-full my-auto">
         {/* Back Button */}
         <Link 
           href="/"
-          className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+          className="inline-flex items-center gap-1 sm:gap-2 text-sm sm:text-base text-white/80 hover:text-white mb-4 sm:mb-6 transition-colors"
         >
           <span>←</span>
           <span>Quay lại</span>
@@ -62,21 +62,21 @@ export default function CreateGift() {
         {!giftCode ? (
           <>
             {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-bold gradient-text mb-4">
+            <div className="text-center mb-6 sm:mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold gradient-text mb-3 sm:mb-4">
                 🎁 Tạo Quà Tặng
               </h1>
-              <p className="text-white/80">
+              <p className="text-sm sm:text-base text-white/80">
                 Viết lời chúc của bạn và chia sẻ niềm vui
               </p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
                 <label 
                   htmlFor="message"
-                  className="block text-sm font-medium mb-2 text-white/90"
+                  className="block text-xs sm:text-sm font-medium mb-2 text-white/90"
                 >
                   Lời Chúc Của Bạn ✨
                 </label>
@@ -85,7 +85,7 @@ export default function CreateGift() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Viết lời chúc Giáng Sinh ý nghĩa của bạn tại đây..."
-                  rows={6}
+                  rows={5}
                   required
                   disabled={isLoading}
                   className="glass-input resize-none"
@@ -136,19 +136,19 @@ export default function CreateGift() {
         ) : (
           <>
             {/* Success State */}
-            <div className="text-center space-y-6 animate-float">
-              <div className="text-6xl mb-4">🎉</div>
-              <h2 className="text-3xl md:text-4xl font-bold gradient-text">
+            <div className="text-center space-y-4 sm:space-y-6 animate-float">
+              <div className="text-5xl sm:text-6xl mb-3 sm:mb-4">🎉</div>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold gradient-text">
                 Quà Đã Được Tạo!
               </h2>
               
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border-2 border-christmas-gold/50">
-                <p className="text-sm text-white/80 mb-2">Mã Quà Tặng</p>
-                <p className="text-4xl md:text-5xl font-bold text-christmas-gold tracking-wider">
+              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border-2 border-christmas-gold/50">
+                <p className="text-xs sm:text-sm text-white/80 mb-2">Mã Quà Tặng</p>
+                <p className="text-3xl sm:text-4xl md:text-5xl font-bold text-christmas-gold tracking-wider">
                   {giftCode}
                 </p>
                 <p className="text-sm text-white/60 mt-4">
-                  Chia sẻ mã này hoặc để người khác mở quà ngẫu nhiên!
+                  Hãy viết mã và tặng này và dán lên hộp quà của bạn nhé!!!
                 </p>
               </div>
 
@@ -159,13 +159,6 @@ export default function CreateGift() {
                 >
                   Tạo Quà Khác 🎁
                 </button>
-                
-                <Link 
-                  href="/open"
-                  className="glass-button w-full block bg-gradient-to-r from-christmas-gold to-yellow-600"
-                >
-                  Mở Quà Ngẫu Nhiên 🎊
-                </Link>
 
                 <Link 
                   href="/"
