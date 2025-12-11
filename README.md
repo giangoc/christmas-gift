@@ -1,4 +1,3 @@
-Muốn thấy rõ câu thư mục, trên web github hãy chọn chế độ CODE thay vì REVIEW
 Thực hiện tải node về máy tính
  https://nodejs.org/en/download
 
@@ -6,6 +5,19 @@ Sau khi cài đặt chạy thử cmd
     node -v # Should print "v24.11.1".
     # Verify npm version:
     npm -v # Should print "11.6.2"
+
+Thực hiện tải cloen source về máy
+ Thực hiện tạo một file .evn.local
+ gồm các key như sau
+  # .env.local
+NEXT_PUBLIC_SUPABASE_URL={URL được lấy từ trang của supabase}
+NEXT_PUBLIC_SUPABASE_ANON_KEY={Key được lấy từ trang của supabase}
+ADMIN_USERNAME=admin    # user để login trang mở quà
+ADMIN_PASSWORD=meo   # pass để login trang mở quà
+
+# Secret key for session (generate random string)
+SESSION_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
 
 Di chuyển đến thư mục của project
  Cách 1: dùng lệnh cd rồi di chuyển vào thư mục .\christmas-gift
@@ -19,6 +31,37 @@ Lệnh CMD:
    npm run dev 
  Lưu ý lệnh cmd đề phải thực hiện ở thư mục gốc của dự án.
 
+-----------------------------------------------------------------------
+Thực hiện tạo table cho database Supabase
+
+-- Tạo bảng gifts
+CREATE TABLE gifts (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  gift_code VARCHAR(10) UNIQUE NOT NULL,
+  message TEXT NOT NULL,
+  is_opened BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- Tạo index để tăng tốc query
+CREATE INDEX idx_gift_code ON gifts(gift_code);
+CREATE INDEX idx_is_opened ON gifts(is_opened);
+
+-- Enable Row Level Security (optional, có thể bật sau)
+ALTER TABLE gifts ENABLE ROW LEVEL SECURITY;
+
+-- Policy cho phép mọi người đọc và tạo
+CREATE POLICY "Enable read access for all users" ON gifts
+  FOR SELECT USING (true);
+
+CREATE POLICY "Enable insert access for all users" ON gifts
+  FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Enable update for all users" ON gifts
+  FOR UPDATE USING (true);
+
+
+-----------------------------------------------------------------------
 📁 Cấu Trúc Thư Mục Project
  christmas-gift-exchange/
 ├── app/
@@ -56,7 +99,4 @@ Lệnh CMD:
 ├── jsconfig.json
 ├── postcss.config.js               # Hỗ trợ load goabl.css và tailwind, file này rất quan trọng nếu không có sẽ bị lỗi CSS
 ├── package.json
-├── middleware.js                 # quản lý phần authen
 └── README.md
-
-

@@ -1,25 +1,36 @@
- // app/open/page.js
+// app/open/page.js
 'use client'
 
 import { useState } from 'react'
 import Link from 'next/link'
 import GiftBox from '@/components/GiftBox'
 import { useConfetti } from '@/hooks/useConfetti'
-
+import { useRouter } from 'next/navigation'
 export default function OpenGift() {
   const [isLoading, setIsLoading] = useState(false)
   const [isOpening, setIsOpening] = useState(false)
   const [gift, setGift] = useState(null)
   const [error, setError] = useState(null)
   const { fireConfetti } = useConfetti()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/logout', { method: 'POST' })
+      //router.push('/')
+      window.location.href = '/'
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
 
   const handleOpenGift = async () => {
     setError(null)
     setIsLoading(true)
 
     try {
-      // Simulate loading delay (2-5 seconds)
-      await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 3000))
+      // Simulate loading delay (1-3 seconds)
+      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
 
       const response = await fetch('/api/random-gift')
       const data = await response.json()
@@ -57,14 +68,24 @@ export default function OpenGift() {
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
       <div className="glass-card p-8 md:p-12 max-w-2xl w-full">
-        {/* Back Button */}
-        <Link 
-          href="/"
-          className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
-        >
-          <span>←</span>
-          <span>Quay lại</span>
-        </Link>
+        {/* Header with Logout */}
+        <div className="flex items-center justify-between mb-6">
+          <Link 
+            href="/"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+          >
+            <span>←</span>
+            <span>Quay lại</span>
+          </Link>
+          
+          <button
+            onClick={handleLogout}
+            className="text-sm text-white/60 hover:text-white transition-colors flex items-center gap-2"
+          >
+            <span>Đăng xuất</span>
+            <span>🚪</span>
+          </button>
+        </div>
 
         {!gift ? (
           <>
