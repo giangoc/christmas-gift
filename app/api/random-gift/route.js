@@ -1,57 +1,109 @@
- // app/api/random-gift/route.js
-import { supabase } from '@/lib/supabase'
+// app/api/random-gift/route.js
+import { supabase } from '../../../lib/supabase'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    // Get all unopened gifts
-    const { data: unopenedGifts, error: fetchError } = await supabase
-      .from('gifts')
-      .select('*')
-      .eq('is_opened', false)
+    // SOLUTION 1: Atomic operation - Select and update in one query
+    // This prevents race conditions by locking the row during selection
+    
+    // Step 1: Get random unopened gift with atomic update
+    const { data: gift, error: fetchError } = await supabase.rpc(
+      'get_random_gift'
+    )
 
     if (fetchError) {
       console.error('Fetch error:', fetchError)
-      return NextResponse.json(
-        { error: 'Failed to fetch gifts' },
-        { status: 500 }
-      )
+      
+      // Fallback to old method if RPC function doesn't exist
+      return fallbackRandomGift()
     }
 
-    if (!unopenedGifts || unopenedGifts.length === 0) {
+    if (!gift || gift.length === 0) {
       return NextResponse.json(
         { error: 'No gifts available', noGifts: true },
         { status: 404 }
       )
     }
 
-    // Select random gift
-    const randomIndex = Math.floor(Math.random() * unopenedGifts.length)
-    const selectedGift = unopenedGifts[randomIndex]
+    return NextResponse.json({
+      success: true,
+      gift: {
+        gift_code: gift[0].gift_code,
+        message: gift[0].message,
+      },
+    })
+  } catch (error) {
+    console.error('Server error:', error)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
 
-    // Mark gift as opened
-    const { error: updateError } = await supabase
+// Fallback method - Less efficient but works without RPC
+async function fallbackRandomGift() {
+  try {
+    // SOLUTION 2: Optimized query - Only select necessary columns and limit
+    // Get count of unopened gifts first
+    const { count, error: countError } = await supabase
+      .from('gifts')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_opened', false)
+
+    if (countError || !count || count === 0) {
+      return NextResponse.json(
+        { error: 'No gifts available', noGifts: true },
+        { status: 404 }
+      )
+    }
+
+    // Calculate random offset
+    const randomOffset = Math.floor(Math.random() * count)
+
+    // Get ONE random gift with offset
+    const { data: gifts, error: fetchError } = await supabase
+      .from('gifts')
+      .select('id, gift_code, message')  // Only select needed columns
+      .eq('is_opened', false)
+      .range(randomOffset, randomOffset)  // Get only 1 record at offset
+      .limit(1)
+
+    if (fetchError || !gifts || gifts.length === 0) {
+      return NextResponse.json(
+        { error: 'Failed to fetch gift' },
+        { status: 500 }
+      )
+    }
+
+    const selectedGift = gifts[0]
+
+    // IMPORTANT: Try to update, but check if another request already opened it
+    const { data: updatedGift, error: updateError } = await supabase
       .from('gifts')
       .update({ is_opened: true })
       .eq('id', selectedGift.id)
+      .eq('is_opened', false)  // CRITICAL: Only update if still unopened
+      .select()
+      .single()
 
-    if (updateError) {
-      console.error('Update error:', updateError)
-      return NextResponse.json(
-        { error: 'Failed to update gift status' },
-        { status: 500 }
-      )
+    // If update failed, the gift was opened by another request
+    if (updateError || !updatedGift) {
+      console.log('Gift was already opened by another request, retrying...')
+      // Recursively try again
+      return fallbackRandomGift()
     }
 
     return NextResponse.json({
       success: true,
       gift: {
-        gift_code: selectedGift.gift_code,
-        message: selectedGift.message,
+        gift_code: updatedGift.gift_code,
+        message: updatedGift.message,
       },
     })
   } catch (error) {
-    console.error('Server error:', error)
+    console.error('Fallback error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

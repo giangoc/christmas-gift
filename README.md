@@ -60,6 +60,59 @@ CREATE POLICY "Enable insert access for all users" ON gifts
 CREATE POLICY "Enable update for all users" ON gifts
   FOR UPDATE USING (true);
 
+-----STORE SQL----
+-- Create a PostgreSQL function for atomic random gift selection
+-- This prevents race conditions by locking the selected row
+
+CREATE OR REPLACE FUNCTION get_random_gift()
+RETURNS TABLE (
+  id UUID,
+  gift_code VARCHAR(10),
+  message TEXT,
+  is_opened BOOLEAN,
+  created_at TIMESTAMPTZ
+) 
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  selected_gift_id UUID;
+BEGIN
+  -- Step 1: Select a random unopened gift ID and lock it
+  -- FOR UPDATE SKIP LOCKED prevents two requests from getting the same gift
+  SELECT g.id INTO selected_gift_id
+  FROM gifts g
+  WHERE g.is_opened = false
+  ORDER BY RANDOM()
+  LIMIT 1
+  FOR UPDATE SKIP LOCKED;  -- KEY: Lock this row, skip if already locked
+  
+  -- Step 2: Check if we found a gift
+  IF selected_gift_id IS NULL THEN
+    RETURN;  -- No unopened gifts available
+  END IF;
+  
+  -- Step 3: Update the gift as opened
+  UPDATE gifts
+  SET is_opened = true
+  WHERE gifts.id = selected_gift_id;
+  
+  -- Step 4: Return the gift data
+  RETURN QUERY
+  SELECT 
+    g.id,
+    g.gift_code,
+    g.message,
+    g.is_opened,
+    g.created_at
+  FROM gifts g
+  WHERE g.id = selected_gift_id;
+END;
+$$;
+
+-- Grant execute permission to authenticated users
+GRANT EXECUTE ON FUNCTION get_random_gift() TO anon;
+GRANT EXECUTE ON FUNCTION get_random_gift() TO authenticated;
+
 
 -----------------------------------------------------------------------
 📁 Cấu Trúc Thư Mục Project
