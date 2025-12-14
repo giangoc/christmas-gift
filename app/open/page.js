@@ -176,7 +176,18 @@ export default function OpenGift() {
                 <p className="text-3xl md:text-4xl font-bold text-christmas-gold tracking-wider mb-4">
                   {gift.gift_code}
                 </p>
+
+                <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent my-4" />
                 
+                 {/* Gift Name */}
+                <div className="bg-white/5 rounded-xl p-6">
+                  <p className="text-sm text-white/70 mb-2">Tên người tặng</p>
+                  <p className="text-lg text-white leading-relaxed whitespace-pre-wrap">
+                    {gift.name}
+                  </p>
+                </div>
+              
+
                 <div className="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent my-4" />
                 
                 {/* Gift Message */}

@@ -48,6 +48,7 @@ export async function GET() {
       gift: {
         gift_code: selectedGift.gift_code,
         message: selectedGift.message,
+        name: selectedGift.name
       },
     })
   } catch (error) {
